@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verify Your Email</title>
+    <style>
+        /* Basic reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.5;
+            padding: 20px;
+        }
+
+        .email-container {
+            background-color: #ffffff;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        img {
+            max-width: 150px;
+            height: auto;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            font-size: 24px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        p {
+            font-size: 16px;
+            color: #555;
+            margin-bottom: 20px;
+        }
+
+        .verify-button {
+            display: inline-block;
+            background-color: #4CAF50;
+            color: #fff;
+            font-size: 16px;
+            font-weight: 600;
+            padding: 12px 25px;
+            border-radius: 5px;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+        }
+
+        .verify-button:hover {
+            background-color: #45a049;
+        }
+
+        .footer {
+            font-size: 14px;
+            color: #777;
+            margin-top: 30px;
+            text-align: center;
+        }
+
+        .footer a {
+            color: #4CAF50;
+            text-decoration: none;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* Media Queries for Responsiveness */
+        @media (max-width: 600px) {
+            .email-container {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 20px;
+            }
+
+            .verify-button {
+                padding: 10px 20px;
+                font-size: 14px;
+            }
+
+            .footer {
+                font-size: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        <img src="logo-placeholder.png" alt="Verify your email address">
+        <h1>Verify your email</h1>
+        <p>We'd like to make sure we got your email address right.</p>
+        <a href="<%= custom.confirmLink %>" class="verify-button">Verify email address</a>
+        <div class="footer">
+            <p>
+                By verifying your email, you confirm your registration and that you are 18 years (21 for the USA) or older. 
+                We'll use this email to keep you posted on important info.
+            </p>
+            <p>&copy; <%= custom.year %> YourCompany Inc. All rights reserved.</p>
+            <p>
+                <a href="<%= custom.termsLink %>">Terms of Use</a> | 
+                <a href="<%= custom.privacyLink %>">Privacy Policy</a> | 
+                <a href="<%= custom.supportLink %>">Support</a>
+            </p>
+        </div>
+    </div>
+</body>
+</html>

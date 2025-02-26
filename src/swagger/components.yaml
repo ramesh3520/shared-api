@@ -1,0 +1,2345 @@
+securitySchemes:
+    ApiAccessKeyAuth:
+      type: apiKey
+      in: header
+      name: x-access-token
+      description: Access Token for authorization
+    ApiRefreshKeyAuth:
+      type: apiKey
+      in: header
+      name: x-refresh-token
+      description: Refresh Token for renewing access tokens
+parameters:
+    headerLanguage:
+        name: Accept-Language
+        in: header
+        required: true
+        schema:
+            type: string
+            default: en
+            enum:
+              - en
+              - ar
+    headerPlatform:
+        name: x-platform
+        in: header
+        required: true
+        schema:
+            type: string
+            default: web
+            enum:
+              - web
+              - android
+              - ios    
+    headerOsType:
+        name: x-os-type
+        in: header
+        required: true
+        schema:
+            type: string
+            default: windows
+            enum:
+              - windows
+              - macOS
+              - linux
+              - android
+              - iOS
+              - chromeOS
+              - unix
+              - freeBSD
+              - openBSD
+              - netBSD
+              - solaris
+              - aix
+              - hpux
+              - other
+    headerVersion:
+        name: x-version
+        in: header
+        required: true
+        schema:
+            type: string
+            default: 1.0.0
+            pattern: '^[\d]+\.[\d]+\.[\d]+$'
+
+    genderType:        
+        name: genderType
+        in: query
+        description: Gender values that need to be considered for filter
+        required: false
+        explode: true
+        schema:
+            type: string
+            default: women
+            enum:
+              - male
+              - women
+              - transsexual
+              - couple
+    contentType:        
+        name: contentType
+        in: query
+        description: Content type value
+        required: true
+        schema:
+            type: string
+            default: allPosts
+            enum:
+              - allPosts
+              - videos
+
+    queryPage:
+        name: page
+        in: query
+        description: page number
+        allowEmptyValue: false
+        required: true
+        schema:
+            type: integer
+    queryPerPage:
+        name: perPage
+        in: query
+        description: number of records per page
+        allowEmptyValue: false
+        required: true
+        schema:
+            type: integer
+responses:
+    BadRequestError:
+        description: Request fails validation or doesn't meet all conditions for request
+        content:
+            application/json:
+                schema:
+                    example:
+                        success: false
+                        message: 'Validation failed'
+                        data: null
+                    allOf:
+                      - $ref: '#/components/schemas/ApiResponse'
+                    properties:
+                        data:
+                            type: object
+                            nullable: true
+    NotFoundError:
+        description: Requested resource was not found
+    UnauthorizedError:
+        description: Access token is missing or invalid
+schemas:
+    ApiResponse:
+        required:
+          - success
+        properties:
+            success:
+                type: boolean
+            message:
+                type: string
+            data: {}
+    User:
+      properties:
+        username:
+          type: string
+        email:
+          type: string
+          format: email
+        roles:
+          type: string
+        status:
+          type: string
+        isDeleted:
+          type: boolean
+    
+    Session:
+      properties:
+        _id:
+          type: string
+        userId:
+          type: string
+        deviceType:
+          type: string
+        osType:
+          type: string
+        isActive:
+          type: boolean
+        createdAt:
+          type: string
+        updatedAt:
+          type: string
+
+    UserProfile:
+      properties:
+        _id:
+          type: string
+        userId:
+          type: string
+        specifics:
+          type: array
+          items:
+            type: string
+        interests:
+          type: array
+          items:
+            type: string
+        languages:
+          type: array
+          items:
+            type: string
+        invisibleMode:
+          type: boolean
+        createdAt:
+          type: string
+        updatedAt:
+          type: string
+        __v:
+          type: integer
+        birthDate:
+          type: string
+        bodyType:
+          type: string
+        description:
+          type: string
+        displayName:
+          type: string
+        ethnicity:
+          type: string
+        eyeColor:
+          type: string
+        gender:
+          type: string
+        hairColor:
+          type: string
+        interestedIn:
+          type: string
+        profilePic:
+          type: string
+        subCulture:
+          type: string
+
+    UserAlbum:
+      properties:
+        _id:
+          type: string
+        userId:
+          type: string
+        albumName:
+          type: string
+        access:
+          type: string
+        images:
+          type: array
+          items:
+            properties:
+              imageUrl:
+                type: string
+              blurImageUrl:
+                type: string
+              _id:
+                type: string
+        locked:
+          type: boolean        
+        likeCount:
+          type: integer
+        isLiked:
+          type: boolean  
+
+    UserSettingsAndPrivacy:
+      properties:
+        settingAndPrivacy:
+          properties:
+            productsUpdateAndPromoEmail:
+              properties:
+                productUpdates:
+                  type: boolean
+                specialOffers:
+                  type: boolean
+            twoFactorAuthentication:
+              type: boolean
+            profileVisibleTo:
+              type: string
+            tokenVisibleTo:
+              type: string
+            autoRefill:
+              type: boolean
+        _id:
+          type: string
+
+    UserFeedback:
+      properties:
+        _id:
+          type: string
+        feedbacks:
+          type: array
+          items:
+            properties:
+              title:
+                type: string
+              description:
+                type: string
+              _id:
+                type: string
+
+    UserReport:
+      properties:
+        _id:
+          type: string
+        reportModels:
+          type: array
+          items:
+            properties:
+              modelId:
+                type: string
+              reason:
+                type: string
+              description:
+                type: string
+              _id:
+                type: string
+
+    UserNotification:
+      properties:
+        notification:
+          properties:
+            email:
+              type: boolean
+            browserNotification:
+              type: boolean
+            telegramNotification:
+              type: boolean
+            plasmaMessengerNotification:
+              type: boolean
+            modelList:
+              type: array
+              items:
+                properties:
+                  modelId:
+                    properties:
+                      _id:
+                        type: string
+                      username:
+                        type: string  
+                  email:
+                    type: boolean
+                  browserNotification:
+                    type: boolean
+                  telegramNotification:
+                    type: boolean
+                  plasmaMessengerNotification:
+                    type: boolean
+                  _id:
+                    type: string
+                  id:
+                    type: string
+
+    UserMyFavorites:
+      properties:
+        userId:
+          type: string
+        myFavoriteModels:
+          type: array
+          items:
+            properties:
+              modelId:
+                type: string
+              liveStatus:
+                type: boolean
+              toyConnection:
+                type: boolean
+              isMobile:
+                type: boolean
+              isNewModel:
+                type: boolean
+              isTickShowAnnounced:
+                type: boolean
+              startedShow:
+                properties:
+                  showType:
+                    type: string
+                  description:
+                    type: string
+                    nullable: true
+              username:
+                type: string
+
+    UserWatchHistory:
+      properties:
+        myWatchHistoryList:
+          type: array
+          items:
+            properties:
+              modelId:
+                type: string
+              date:
+                type: string
+              liveStatus:
+                type: boolean
+              toyConnection:
+                type: boolean
+              isMobile:
+                type: boolean
+              isNewModel:
+                type: boolean
+              isTickShowAnnounced:
+                type: boolean
+              username:
+                type: string
+        userId:
+          type: string
+
+    UserNotInterestedModels:
+      properties:
+        _id:
+          type: string
+        NotInterestedModelList:
+          type: array
+          items:
+            properties:
+              _id:
+                type: string
+              username:
+                type: string
+              modelId:
+                type: string
+              profilePhoto:
+                type: string
+              coverPhoto:
+                type: string
+
+    UserCollecionSimpleDetails:
+      properties:
+        _id:
+          type: string
+        modelId:
+          type: string
+        userId:
+          type: string
+        videoCount:
+          type: integer
+        postCount:
+          type: integer
+        totalImageCount:
+          type: integer
+        username:
+          type: string
+        profilePhoto:
+          type: string
+        coverPhoto:
+          type: string
+
+    UserCollectionOfParModel:
+      properties:
+        _id:
+          type: string
+        userId:
+          type: string
+        albums:
+          type: array
+          items: []
+        videos:
+          type: array
+          items: []
+        posts:
+          type: array
+          items: []
+
+    PresignedUrlResponse:
+      properties:
+        presignedUrl:
+          type: string
+        previewUrl:
+          type: string
+        fileKey:
+          type: string
+
+    UserTokenHistoryResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "2312769a-0245-46aa-ba30-edf514df8041"
+        userId:
+          type: string
+          example: "676140e211188e6892f1f9e8"
+        totalToken:
+          type: integer
+          example: 130
+        createdAt:
+          type: string
+          format: date-time
+          example: "2024-12-20T09:16:54.833Z"
+        updatedAt:
+          type: string
+          format: date-time
+          example: "2024-12-20T13:37:40.533Z"
+        tokenHistoryInsideUser:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                example: "8257fd13-35f6-4fd2-a0cd-7ff2ef3201e6"
+              modelId:
+                type: string
+                nullable: true
+                example: "676144aef72120fb467eff70"
+              token:
+                type: integer
+                example: 10
+              typeOfToken:
+                type: string
+                example: "payment"
+              date:
+                type: string
+                format: date-time
+                example: "2024-12-20T12:30:21.023Z"
+              deleted:
+                type: boolean
+                example: false
+
+    ModelAlbum:
+      properties:
+        name:
+          type: string
+        access:
+            type: string
+        fanclubAccess:
+          type: string
+        token:
+          type: number
+        images:
+          type: array
+        items:
+          type: object
+          properties:
+            imageUrl:
+              type: string
+            likes: 
+              type: array
+              items: 
+                type: string
+
+    ModelVideo:
+      properties:
+        videoName:
+          type: string
+        videoUrl:
+          type: string
+        coverUrl:
+          type: string
+        access:
+          type: string
+        fanclubAccess:
+          type: string
+        token:
+          type: number
+        likes:
+          type: array
+          items:
+            type: string
+            properties:
+              userid:
+                type: string 
+
+    SettingAndPrivacy:
+      properties:
+        profileVisible: string;
+        studioAdmin: string;
+        moderator: string;
+        twoFactorAuthentication: boolean;
+        notification:
+          type: object
+          items:  
+            email: 
+            type: object
+            items:
+              modelLive: boolean
+              privateMessages: boolean
+              productUpdates: boolean 
+            webPush:
+              type: object
+              items:
+                modelLive: boolean
+                privateMessages: boolean
+                productUpdates: boolean
+            telegramCamBot: boolean
+        timeZone: string
+        copyContentToMyClub: boolean;
+
+    Profile: 
+      properties:
+        studioId:
+          type: string
+          description: "ID of the studio, reference to 'User' model"
+        studioName:
+          type: string
+          description: "Name of the studio"
+        profilePhoto:
+          type: string
+          description: "Profile photo URL"
+        interestIn:
+          type: string
+          enum:
+            - "men"
+            - "women"
+            - "transsexual"
+            - "everyone"
+          description: "Interest category (from InterestedIn enum)"
+        DOB:
+          type: string
+          format: date
+          description: "Date of birth of the studio owner"
+        country:
+          type: string
+          description: "Country of the studio"
+        region:
+          type: string
+          description: "Region of the studio"
+        city:
+          type: string
+          description: "City of the studio"
+        language:
+          type: array
+          items:
+            type: string
+          description: "List of languages the studio owner speaks"
+        bodyType:
+          type: string
+          enum:
+            - "skinny"
+            - "big"
+            - "chunk"
+            - "muscular"
+          description: "Body type (from BodyType enum)"
+        specifics:
+          type: array
+          items:
+            type: string
+          description: "List of specifics or preferences"
+        ethnicity:
+          type: string
+          description: "Ethnicity of the studio owner"
+        hairColor:
+          type: string
+          description: "Hair color of the studio owner"
+        eyeColor:
+          type: string
+          description: "Eye color of the studio owner"
+        subCulture:
+          type: string
+          description: "Subculture the studio owner identifies with"
+        interests:
+          type: object
+          properties:
+            sexualIn:
+              type: array
+              items:
+                type: string
+              description: "List of sexual interests"
+            creativity:
+              type: array
+              items:
+                type: string
+              description: "List of creative interests"
+            sport:
+              type: array
+              items:
+                type: string
+              description: "List of sports interests"
+            socialLive:
+              type: array
+              items:
+                type: string
+              description: "List of social life interests"
+            homeTime:
+              type: array
+              items:
+                type: string
+              description: "List of home time activities"
+            moviesTime:
+              type: array
+              items:
+                type: string
+              description: "List of movie-related interests"
+            music:
+              type: array
+              items:
+                type: string
+              description: "List of music-related interests"
+            foodDrinks:
+              type: array
+              items:
+                type: string
+              description: "List of food and drink interests"
+            travelling:
+              type: array
+              items:
+                type: string
+              description: "List of travel interests"
+        models:
+          type: array
+          items:
+            type: object
+            properties:
+              modelId:
+                type: string
+                description: "Model ID (reference to 'User' model)"
+        settingAndPrivacy:
+          type: object
+          properties:
+            profileVisible:
+              type: string
+              enum:
+                - "EVERYONE"
+                - "FRIENDS"
+                - "NO_ONE"
+              default: "EVERYONE"
+              description: "Visibility of the profile"
+            twoFactorAuthentication:
+              type: boolean
+              default: false
+              description: "Indicates whether two-factor authentication is enabled"
+            studioAdmin:
+              type: array
+              items:
+                type: string
+              description: "List of studio admin IDs"
+            moderators:
+              type: array
+              items:
+                type: string
+              description: "List of moderator IDs"
+            notification:
+              type: object
+              properties:
+                email:
+                  type: object
+                  properties:
+                    modelLive:
+                      type: boolean
+                      default: false
+                      description: "Email notification for model live"
+                    privateMessages:
+                      type: boolean
+                      default: false
+                      description: "Email notification for private messages"
+                    productUpdates:
+                      type: boolean
+                      default: false
+                      description: "Email notification for product updates"
+                webPush:
+                  type: object
+                  properties:
+                    modelLive:
+                      type: boolean
+                      default: false
+                      description: "Web push notification for model live"
+                    privateMessages:
+                      type: boolean
+                      default: false
+                      description: "Web push notification for private messages"
+                    productUpdates:
+                      type: boolean
+                      default: false
+                      description: "Web push notification for product updates"
+                telegramCamBot:
+                  type: boolean
+                  default: false
+                  description: "Telegram CamBot notification"
+            timeZone:
+              type: string
+              default: "india"
+              description: "Time zone of the studio"
+            copyContentToMyClub:
+              type: boolean
+              default: false
+              description: "Whether the content should be copied to 'My Club'"
+        friend:
+          type: array
+          items:
+            type: string
+          description: "List of friend IDs (reference to 'Friend' model)"
+
+    ModelFanClub: 
+      properties:
+        soldier: 
+          type: object
+          properties:
+            freeSpying:
+              type: number
+              example: 10
+            tipDiscount:
+              type: number
+              example: 10
+            privateShowDiscount:
+              type: number
+              example: 10
+            exclusiveShowDiscount:
+              type: number
+              example: 10
+        lord: 
+          type: object
+          properties:
+            freeSpying:
+              type: number
+              example: 10
+            tipDiscount:
+              type: number
+              example: 10
+            privateShowDiscount:
+              type: number
+              example: 10
+            exclusiveShowDiscount:
+              type: number
+              example: 10
+        prince: 
+          type: object
+          properties:
+            freeSpying:
+              type: number
+              example: 10
+            tipDiscount:
+              type: number
+              example: 10
+            privateShowDiscount:
+              type: number
+              example: 10
+            exclusiveShowDiscount:
+              type: number
+              example: 10
+        customBenifit: 
+          type: object
+          properties:
+            benefitName:
+              type: string
+              example: "Snapchat link"
+            benefit:
+              type: string
+              example: "https://snapchat.com/diksha"
+              description: "include any links any detail etc."
+        description:
+          type: string
+          example:  'hello guys please join my fanclub here you will get premium things'
+
+    LeagueAndLevelResponse:
+      type: object
+      properties:
+        userId:
+          type: string
+          description: User identifier
+        id:
+          type: string
+          description: Unique identifier for the league and level entity
+        level:
+          type: number
+          description: Current level of the user
+        league:
+          type: string
+          description: League to which the user belongs
+        currentXp:
+          type: number
+          description: Current XP points of the user
+        totalXp:
+          type: number
+          description: Total XP points of the user
+        createdAt:
+          type: string
+          format: date-time
+          description: Creation timestamp
+        updatedAt:
+          type: string
+          format: date-time
+          description: Last updated timestamp
+    
+    CreateStreamData:
+      type: object
+      properties:
+        chatRoomType:
+          type: string
+          example: "public"
+        modelId:
+          type: string
+          example: "671b45663b5d077a730b055d"
+        contentViewtype:
+          type: string
+          example: "host"
+        status:
+          type: boolean
+          example: true
+        viewersCount:
+          type: integer
+          example: 1
+        message:
+          type: object
+          properties:
+            public:
+              type: object
+              properties:
+                isDeleted:
+                  type: boolean
+                  example: false
+                messages:
+                  type: array
+                  items:
+                    type: string
+                  example: []
+            private:
+              type: object
+              properties:
+                isDeleted:
+                  type: boolean
+                  example: false
+                messages:
+                  type: array
+                  items:
+                    type: string
+                  example: []
+        isdelete:
+          type: boolean
+          example: false
+        _id:
+          type: string
+          example: "677e21d19a1040f363ff6c74"
+        startedAt:
+          type: string
+          format: date-time
+          example: "2025-01-08T06:57:21.452Z"
+        createdAt:
+          type: string
+          format: date-time
+          example: "2025-01-08T06:57:21.458Z"
+        updatedAt:
+          type: string
+          format: date-time
+          example: "2025-01-08T06:57:21.458Z"
+
+    ModelToken:
+      properties:
+        id:
+          type: string
+        modelId:
+            type: string
+        totalTokan:
+          type: number
+        tokenHistoryInsideModel:
+          type: array
+          items:
+            type: object
+            properties:
+              token:
+                type: number
+              typeofToken:
+                type: string
+              date:
+                type: string
+              tokenTransactionType:
+                type: string
+
+    StudioModel:
+      properties:
+        models: 
+          type: array
+          items:
+            type: object
+            properties:
+                _id: 
+                  type: string
+                modelName:
+                  type: string
+                favoritedBy:
+                  type: number
+                reviewId: 
+                  type: number
+                status: 
+                  type: string
+                accountHolder:
+                  type: string
+                gender: 
+                  type: string
+                stripScore:
+                  type: number
+                docs: 
+                  type: boolean
+     
+    ParticularModel:
+      type: object
+      properties:
+          _id:
+              type: string
+              format: objectId
+              description: Unique identifier of the user
+          username: 
+              type: string
+              description: Username of the user
+          person: 
+              type: array
+              items:
+                type: object
+                properties:
+                    _id: 
+                      type: string
+                    accountHolder:
+                      type: string
+
+    RemoveModel: 
+      properties:
+        studio:
+            type: object
+            properties: 
+                isRemove: 
+                    type: boolean
+        _id: 
+            type: string
+        username: 
+            type: string
+        status: 
+            type: string
+
+    DeleteModel:
+      properties:
+        studio:
+            type: object
+            properties: 
+                isRemove: 
+                    type: boolean
+                    example: true
+        _id: 
+            type: string
+            example: '38497cb83746b5345653'
+        username: 
+            type: string
+            example: 'johnDoe'
+        status: 
+            type: string
+            example: 'deActive'
+        isDeleted:
+            type: boolean
+            example: true
+
+    StudioPerson:
+      properties:
+        person:
+            type: array
+            items:
+                type: object
+                properties:
+                    accountHolderName:
+                        type: string
+                    gender: 
+                        type: string
+                    dob: 
+                        type: string
+                    model:
+                        type: array
+                        item: 
+                            type: object
+                            properties: 
+                                _id: 
+                                    type: string
+                                username: 
+                                    type: string
+
+    StudioPersonPost:
+      properties:
+        documentIssueCountry:
+            type: string
+            description: This is Document issue country of person.
+        idType:
+            type: string
+            description: This define Id type
+        gender:
+            type: string
+            description: This is gender of person.
+        city:
+            type: string
+            description:  This is city of person
+        address:
+            type: string
+            description: This is adderess of person.
+        isVerified: 
+            type: boolean
+            dscrription: This define person is verified or not
+
+    UpdatePerson:
+      properties:
+        verifiedPersons:
+            type: array
+            items:
+                type: object
+                properties:
+                    accountHolderName: 
+                        type: string
+                    models: 
+                        type: array
+                        item:
+                            type: string
+                    gender: 
+                        type: string
+                    status: 
+                        type: string
+                    isVerified: 
+                        type: boolean
+
+    HomeTime:
+      properties:
+        _id:
+          type: string
+        name:
+          type: string
+        icon:
+          type: string
+        status:
+          type: string
+          enum:
+            - Active
+            - Inactive
+            - Archived
+
+    Creativity:
+      properties:
+        _id:
+          type: string
+        name:
+          type: string
+        icon:
+          type: string
+        status:
+          type: string
+          enum:
+            - Active
+            - Inactive
+            - Archived
+    
+    FoodAndDrinks:
+      properties:
+        _id:
+          type: string
+        name:
+          type: string
+        icon:
+          type: string
+        status:
+          type: string
+          enum:
+            - Active
+            - Inactive
+            - Archived
+    
+    MoviesTv:
+      properties:
+        _id:
+          type: string
+        name:
+          type: string
+        icon:
+          type: string
+        status:
+          type: string
+          enum:
+            - Active
+            - Inactive
+            - Archived
+    
+    Music:
+      properties:
+        _id:
+          type: string
+        name:
+          type: string
+        icon:
+          type: string
+        status:
+          type: string
+          enum:
+            - Active
+            - Inactive
+            - Archived
+    
+    SexualInterest:
+      properties:
+        _id:
+          type: string
+        name:
+          type: string
+        icon:
+          type: string
+        status:
+          type: string
+          enum:
+            - Active
+            - Inactive
+            - Archived
+
+    SocialLive:
+      properties:
+        _id:
+          type: string
+        name:
+          type: string
+        icon:
+          type: string
+        status:
+          type: string
+          enum:
+            - Active
+            - Inactive
+            - Archived
+
+    Sport:
+      properties:
+        _id:
+          type: string
+        name:
+          type: string
+        icon:
+          type: string
+        status:
+          type: string
+          enum:
+            - Active
+            - Inactive
+            - Archived
+
+    Traveling:
+      properties:
+        _id:
+          type: string
+        name:
+          type: string
+        icon:
+          type: string
+        status:
+          type: string
+          enum:
+            - Active
+            - Inactive
+            - Archived
+
+    WhatsNew:
+     properties:
+            id:
+              type: string
+            title:
+              type: string
+            content:
+              type: string
+            imageUrl:
+              type: string
+            like: 
+              type: array
+              items:
+                type: string
+            disLike:
+              type: array 
+              items:
+                type: string 
+            createdAt:
+              type: string
+            feedback:
+              type: array
+              items:
+                type: object
+                properties:
+                    feedbacktype:
+                      type: string
+                    feedbackDescription:
+                      type: string
+                    feedbackuser:
+                      type: string
+    
+    
+    CookiePolicy:
+      properties:
+            id:
+              type: string
+            title:
+              type: string
+            content:
+              type: string
+            manage:
+              type: array
+              items:
+                type: object
+                properties:
+                    title:
+                      type: string
+                    isActive:
+                      type: string
+                    description:
+                      type: string
+            createdAt: 
+              type: string
+            updatedAt:
+              type : string   
+    
+    PrivacyPolicy:
+        properties:
+              id:
+               type: string
+              title:
+               type: string
+              content:
+               type: string
+              createdAt: 
+               type: string
+              updatedAt:
+               type : string 
+                      
+    TermsOfUse:
+     properties:
+            id:
+              type: string 
+            title:
+               type: string
+            content:
+               type: array
+               items:
+                type: object
+                properties:
+                    title:
+                      type: string
+                    shortDescription:
+                      type: string
+                    description:
+                      type: string
+            createdAt:
+                type: string
+            updatedAt: 
+                type: string
+
+    addKnight:
+      properties:
+        _id: 
+          type: string
+        modelId:
+          type: string
+        knights:
+          type: array
+          items:
+            type: string
+
+    updateKnight:
+      properties:
+        acknowledged:
+          type: boolean
+        modifiedCount: 
+          type: number
+        upsertedId: 
+          type: number
+        upsertedCount:
+          type: number
+        matchedCount: 
+          type: number
+    
+    getKnight:
+      properties:
+          modelId:
+              type: string
+          knights:
+            type: array
+            items:
+              type: object
+              properties:
+                  _id: 
+                    type: string
+                  username:
+                    type: string
+  
+    getAdmin:
+      properties:
+        studioId: 
+          type: string
+        admin: 
+          type: array
+          items:
+            type: object
+            properties:
+              _id: 
+                type: string
+              username: 
+                type: string
+
+    addAdmin:
+      properties:
+        studioAdminRoleType:
+          type: object
+          properties: 
+            studioId:
+              type: string
+            roleType: 
+              type: string
+        userId:
+          type: string
+
+    removeAdmin:
+      properties:
+        _id: 
+          type: string
+        studioId:
+          type: string
+        studioAdmin: 
+          type: array
+          items:
+            type: string
+        studioModerator:
+          type: array
+          items:
+            type: string
+
+    getTotalToken:
+      properties:
+        id: 
+          type: string
+        studioId:
+          type: string
+        totalToken:
+          type: number
+
+    getTokenHistory:
+      properties:
+        id: 
+          type: string
+        studioId:
+          type: string
+          format: ObjectId
+        totalToken:
+          type: number
+        createdAt:
+          type: string
+          format: date
+        updatedAt: 
+          type: string
+          format: date
+        tokenHistoryInsideStudio:
+          type: array
+          items: 
+            type: object
+            properties:
+              id:
+                type: string
+              modelId: 
+                type: string
+                formate: objectId
+              token:
+                type: number
+              typeOfToken: 
+                type: string
+              date: 
+                type: string
+                format: date
+              tokenTransactionType:
+                type: string
+              deleted:
+                type: boolean
+                default: false
+              username: 
+                type: string
+              type: 
+                type: string
+    liveModel:
+      type: array
+      items:
+        type: object
+        properties:
+          _id:
+            type: string
+            example: "6762cb16b924dd01af62896e"
+          modelId:
+            type: string
+            example: "6762cb16b924dd01af62896c"
+          username:
+            type: string
+            example: "zahid"
+          previews:
+            type: object
+            properties:
+              imageUrl:
+                type: string
+                format: url
+                example: "https://media.istockphoto.com/id/2150308249/photo/portrait-of-a-beautiful-woman-with-natural-make-up.webp?a=1&b=1&s=612x612&w=0&k=20&c=IXX1BhoXT13Y1ekLyB0myFm-bIMcihZ3-aCIi5fckW8="
+              videoUrl:
+                type: string
+                format: url
+                example: "https://plus.unsplash.com/premium_photo-1682095757120-c9abb908ed60?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8bW9kZWx8ZW58MHx8MHx8fDA%3D"
+          liveStatus:
+            type: boolean
+            example: false
+          country:
+            type: string
+            example: "India"
+          toyConnection:
+            type: boolean
+            example: false
+          isMobile:
+            type: boolean
+            example: false
+          isNewModel:
+            type: boolean
+            example: true
+          isTickShowAnnounced:
+            type: boolean
+            example: false
+          startedShow:
+            $ref: '#/components/schemas/StartedShow'
+
+    StartedShow:
+      type: object
+      properties:
+        showType:
+          type: string
+          example: "public"
+        description:
+          type: string
+          nullable: true
+          example: null 
+    
+    ModelPost:
+      type: object
+      properties:
+        _id:
+          type: string
+          example: "6793451aee762480842e552c"
+        modelId:
+          type: string
+          example: "676144aef72120fb467eff70"
+        posts:
+          type: array
+          items:
+            type: object
+            properties:
+              imageUrl:
+                type: string
+                example: "posts/normal/modelname/image.jpg"
+              blurImageUrl:
+                type: string
+                example: "posts/blur/modelName/image.jpg"
+              description:
+                type: string
+                example: "very hottest post"
+              likes:
+                type: array
+                items:
+                  type: string
+                  example: "676144aef72120fb467eff70"
+              fanClub:
+                type: object
+                properties:
+                  enable:
+                    type: boolean
+                    example: false
+                  freeFor:
+                    type: array
+                    items:
+                      type: string
+                      example: []
+              isDeleted:
+                type: boolean
+                example: false
+              _id:
+                type: string
+                example: "67934535ee762480842e5554"
+              createdAt:
+                type: string
+                format: date-time
+                example: "2025-01-24T07:45:57.328Z"
+              updatedAt:
+                type: string
+                format: date-time
+                example: "2025-01-24T07:45:57.328Z"
+              likeCount:
+                type: integer
+                example: 1
+
+    BroadcastModelDetail:
+      type: object
+      properties:
+        startedShow:
+          type: object
+          properties:
+            showType:
+              type: string
+              example: "public"
+            description:
+              type: string
+              nullable: true
+              example: null
+        myShowActivities:
+          type: object
+          properties:
+            publicShowIdo:
+              type: array
+              items:
+                type: string
+                example: "Dirty Talk"
+            privateShowIdo:
+              type: array
+              items:
+                type: string
+                example: "Kissing"
+            exclusivePrivateShowIdo:
+              type: array
+              items:
+                type: string
+                example: "Ass to Mouth"
+        pricing:
+          type: object
+          properties:
+            privateShows:
+              type: object
+              properties:
+                isEnabled:
+                  type: boolean
+                  example: false
+                token:
+                  type: integer
+                  example: 30
+                minutes:
+                  type: integer
+                  example: 10
+            exclusivePrivate:
+              type: object
+              properties:
+                isEnabled:
+                  type: boolean
+                  example: false
+                token:
+                  type: integer
+                  example: 80
+                minutes:
+                  type: integer
+                  example: 10
+            spying:
+              type: object
+              properties:
+                isEnabled:
+                  type: boolean
+                  example: false
+                token:
+                  type: integer
+                  example: 100
+                minutes:
+                  type: integer
+                  example: 100
+            groupShow:
+              type: object
+              properties:
+                token:
+                  type: integer
+                  example: 60
+            ticketShow:
+              type: object
+              properties:
+                token:
+                  type: integer
+                  example: 100
+        _id:
+          type: string
+          example: "676144aef72120fb467eff74"
+        modelId:
+          type: string
+          example: "676144aef72120fb467eff70"
+        profileId:
+          type: string
+          example: "676144aef72120fb467eff72"
+        liveStatus:
+          type: boolean
+          example: true
+        toyConnection:
+          type: boolean
+          example: false
+        isMobile:
+          type: boolean
+          example: false
+        isNewModel:
+          type: boolean
+          example: true
+        isTickShowAnnounced:
+          type: boolean
+          example: false
+        streamSpecifics:
+          type: array
+          items:
+            type: object
+            properties:
+              _id:
+                type: string
+                example: "67936bcd0c33be756efb20a3"
+              specifies:
+                type: string
+                example: "ASMR"
+              verified:
+                type: boolean
+                example: true
+        createdAt:
+          type: string
+          format: date-time
+          example: "2024-12-17T09:30:22.560Z"
+        updatedAt:
+          type: string
+          format: date-time
+          example: "2025-01-22T12:02:15.635Z"
+        __v:
+          type: integer
+          example: 0
+        firstBroadcastDate:
+          type: string
+          format: date-time
+          example: "2024-12-17T09:30:22.560Z"
+      message:
+        type: string
+        example: "broadcast model detail found successfully"
+
+    ModelSettingAndPrivacy:
+      type: object
+      properties:
+        bannedCountryAndRegion:
+          type: object
+          properties:
+            country:
+              type: array
+              items:
+                type: string
+              example: []
+            banned:
+              type: string
+              nullable: true
+              example: null
+            region:
+              type: object
+              example: {}
+        countryAndAgeCategory:
+          type: object
+          properties:
+            showInAgeCategory:
+              type: boolean
+              example: false
+            showInCountryCategory:
+              type: boolean
+              example: false
+            showCountryAndFlagInProfile:
+              type: boolean
+              example: false
+        messageTranslation:
+          type: object
+          properties:
+            enable:
+              type: boolean
+              example: false
+            language:
+              type: string
+              example: "english"
+        activeSession:
+          type: object
+          properties:
+            deviceOs:
+              type: string
+              nullable: true
+              example: null
+            browser:
+              type: string
+              nullable: true
+              example: null
+            country:
+              type: string
+              nullable: true
+              example: null
+            Date:
+              type: string
+              nullable: true
+              format: date-time
+              example: null
+            logout:
+              type: boolean
+              example: false
+        notification:
+          type: object
+          properties:
+            email:
+              type: object
+              properties:
+                offlineTips:
+                  type: boolean
+                  example: false
+                privateMessages:
+                  type: boolean
+                  example: false
+                productUpdates:
+                  type: boolean
+                  example: false
+            webPush:
+              type: object
+              properties:
+                offlineTips:
+                  type: boolean
+                  example: false
+                privateMessages:
+                  type: boolean
+                  example: false
+                productUpdates:
+                  type: boolean
+                  example: false
+            telegramCamBot:
+              type: string
+              example: "false"
+        blockWordsAndPhrases:
+          type: object
+          properties:
+            enable:
+              type: boolean
+              example: false
+            wordsAndPhrases:
+              type: array
+              items:
+                type: string
+              example: []
+        twoFactorAuthentication:
+          type: boolean
+          example: false
+        timeZone:
+          type: string
+          example: "india"
+        contentInPromos:
+          type: boolean
+          example: false
+        DMCA:
+          type: array
+          items:
+            type: string
+          example: []
+        copyContentToMyClub:
+          type: boolean
+          example: false
+        message:
+          type: string
+          example: "Setting and Privacy found for the model"
+
+    ModelAlbumDetail:
+      type: object
+      properties:
+        albums:
+          type: array
+          items:
+            type: object
+            properties:
+              _id:
+                type: string
+                example: "6788ae1c0e8a1a6a442236f7"
+              modelId:
+                type: string
+                example: "676144aef72120fb467eff70"
+              name:
+                type: string
+                example: "my nude album"
+              access:
+                type: string
+                example: "free for all"
+              fanclubAccess:
+                type: string
+                nullable: true
+                example: "soldier-lord-prince"
+              token:
+                type: integer
+                example: 0
+              likes:
+                type: array
+                items:
+                  type: string
+                  example: "678e1e8a33fab4b968a4d37c"
+              isDeleted:
+                type: boolean
+                example: false
+              images:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    imageUrl:
+                      type: string
+                      example: "/albums/normal/zahid/imageName1.jpg"
+                    isDeleted:
+                      type: boolean
+                      example: false
+                    _id:
+                      type: string
+                      example: "678e1e8a33fab4b968a4d37c"
+                    createdAt:
+                      type: string
+                      format: date-time
+                      example: "2025-01-20T09:59:38.202Z"
+                    updatedAt:
+                      type: string
+                      format: date-time
+                      example: "2025-01-20T09:59:38.202Z"
+              createdAt:
+                type: string
+                format: date-time
+                example: "2025-01-16T06:58:36.790Z"
+              updatedAt:
+                type: string
+                format: date-time
+                example: "2025-01-20T10:00:00.881Z"
+              __v:
+                type: integer
+                example: 0
+              likeCount:
+                type: integer
+                example: 1
+        message:
+          type: string
+          example: "Model album detail fetched successfully."
+
+    ModelVideoDetail:
+      type: object
+      properties:
+        _id:
+          type: string
+          example: "677e43eff220bc1eebae0841"
+        modelId:
+          type: string
+          example: "676144aef72120fb467eff70"
+        videoName:
+          type: string
+          example: "Abc"
+        videoUrl:
+          type: string
+          example: "video/abc.mp4"
+        coverUrl:
+          type: string
+          example: "cover/abc.mp4"
+        access:
+          type: string
+          example: "free for all"
+        fanclubAccess:
+          type: string
+          example: "free for prince"
+        token:
+          type: integer
+          example: 100
+        createdAt:
+          type: string
+          format: date-time
+          example: "2025-01-08T09:22:55.050Z"
+        updatedAt:
+          type: string
+          format: date-time
+          example: "2025-01-13T07:18:51.092Z"
+        blurImageUrl:
+          type: string
+          example: "cover/ab.mp4"
+        likeCount:
+          type: integer
+          example: 2
+
+    ModelProfile:
+      type: object
+      properties:
+        _id:
+          type: string
+          example: "676144aef72120fb467eff72"
+        modelId:
+          type: string
+          example: "676144aef72120fb467eff70"
+        language:
+          type: array
+          items:
+            type: string
+            example: "English"
+        specifics:
+          type: array
+          items:
+            type: string
+            example: "BBC"
+        favoritedBy:
+          type: array
+          items:
+            type: string
+            example: "676140e211188e6892f1f9e8"
+        socialLinks:
+          type: object
+          properties:
+            twitterUrl:
+              type: string
+              example: "https://example.com/twitterUrl1.jpg"
+            amazonWishListUrl:
+              type: string
+              example: "https://example.com/amazonWishListUrl.com"
+            fanCentroUrl:
+              type: string
+              example: "https://example.com/fanCentroUrl.com"
+        interests:
+          type: object
+          properties:
+            sexualIn:
+              type: array
+              items:
+                type: string
+                example: "bars"
+            creativity:
+              type: array
+              items:
+                type: string
+                example: "acting"
+            sport:
+              type: array
+              items:
+                type: string
+                example: "baseball"
+            socialLive:
+              type: array
+              items:
+                type: string
+                example: "bookcrossing"
+            homeTime:
+              type: array
+              items:
+                type: string
+                example: "anime"
+            moviesTime:
+              type: array
+              items:
+                type: string
+                example: "action"
+            music:
+              type: array
+              items:
+                type: string
+                example: "classic"
+            foodDrinks:
+              type: array
+              items:
+                type: string
+                example: "beer"
+            travelling:
+              type: array
+              items:
+                type: string
+                example: "fishing"
+        albumId:
+          type: array
+          items:
+            type: string
+            example: "albumId_example"
+        settingAndPrivacy:
+          type: object
+          properties:
+            bannedCountryAndRegion:
+              type: object
+              properties:
+                country:
+                  type: array
+                  items:
+                    type: string
+                    example: "country_example"
+                banned:
+                  type: string
+                  nullable: true
+                  example: null
+                region:
+                  type: object
+                  example: {}
+            countryAndAgeCategory:
+              type: object
+              properties:
+                showInAgeCategory:
+                  type: boolean
+                  example: false
+                showInCountryCategory:
+                  type: boolean
+                  example: false
+                showCountryAndFlagInProfile:
+                  type: boolean
+                  example: false
+            messageTranslation:
+              type: object
+              properties:
+                enable:
+                  type: boolean
+                  example: false
+                language:
+                  type: string
+                  example: "english"
+            activeSession:
+              type: object
+              properties:
+                deviceOs:
+                  type: string
+                  nullable: true
+                  example: null
+                browser:
+                  type: string
+                  nullable: true
+                  example: null
+                country:
+                  type: string
+                  nullable: true
+                  example: null
+                Date:
+                  type: string
+                  nullable: true
+                  format: date-time
+                  example: null
+                logout:
+                  type: boolean
+                  example: false
+            notification:
+              type: object
+              properties:
+                email:
+                  type: object
+                  properties:
+                    offlineTips:
+                      type: boolean
+                      example: false
+                    privateMessages:
+                      type: boolean
+                      example: false
+                    productUpdates:
+                      type: boolean
+                      example: false
+                webPush:
+                  type: object
+                  properties:
+                    offlineTips:
+                      type: boolean
+                      example: false
+                    privateMessages:
+                      type: boolean
+                      example: false
+                    productUpdates:
+                      type: boolean
+                      example: false
+                telegramCamBot:
+                  type: string
+                  example: "false"
+            blockWordsAndPhrases:
+              type: object
+              properties:
+                enable:
+                  type: boolean
+                  example: false
+                wordsAndPhrases:
+                  type: array
+                  items:
+                    type: string
+                    example: "blocked_word"
+            twoFactorAuthentication:
+              type: boolean
+              example: false
+            timeZone:
+              type: string
+              example: "india"
+            contentInPromos:
+              type: boolean
+              example: false
+            DMCA:
+              type: array
+              items:
+                type: string
+                example: "dmca_example"
+            copyContentToMyClub:
+              type: boolean
+              example: false
+        flirtingMode:
+          type: boolean
+          example: false
+
+    studioProfile:
+      properties:
+        location:
+            type: object
+            properties:
+              country:
+                type: string
+              city:
+                type: string
+              region:
+                type: string
+        interest:
+          type: object
+          properties:
+            moviesTime:
+              type: array
+              items:
+                type: string
+            sexualIn:
+              type: array
+              items:
+                type: string
+            creativity:
+              type: array
+              items:
+                type: string
+            sport:
+              type: array
+              items:
+                type: string
+            socialLive:
+              type: array
+              items:
+                type: string
+            homeTime:
+              type: array
+              items:
+                type: string
+            music:
+              type: array
+              items:
+                type: string
+            foodDrinks:
+              type: array
+              items:
+                type: string
+            travelling:
+              type: array
+              items:
+                type: string
+            specifics:
+              type: array
+              items:
+                type: string
+            language:
+              type: array
+              items:
+                type: string
+        _id:
+          type: string
+        studioId: 
+          type: string
+        DOB:
+          type: string
+          format: date
+        bodyType: 
+          type: string
+        city: 
+          type: string
+        country: 
+          type: string
+        ethinicity: 
+          type: string
+        eyeColor: 
+          type: string
+        hairColor: 
+          type: string
+        interestIn: 
+          type: string
+        region: 
+          type: string
+        studioName: 
+          type: string
+        subCulture:
+          type: string
+
+    studioSetting:
+      properties:
+        _id:
+            type: string
+        studioId: 
+          type: object
+          properties:
+            _id: 
+              type: string
+            username:
+              type: string
+            email: 
+              type: string
+            isEmailVerify: 
+              type: string
+            isDelete: 
+              type: string
+        settingAndPrivacy:
+          type: object
+          properties:
+            notification:
+              type: object
+              properties:
+                email:
+                    type: object
+                    properties:
+                      modelLive: 
+                        type: boolean
+                      privateMessages: 
+                        type: boolean
+                      productUpdates: 
+                        type: boolean
+                webPush:
+                    type: object
+                    properties:
+                      modelLive: 
+                        type: boolean
+                      privateMessages: 
+                        type: boolean
+                      productUpdates: 
+                        type: boolean
+                telegramCamBot:
+                  type: boolean
+        profileVisible: 
+          type: string
+        twoFactorAuthentication:
+          type: boolean
+    
+    Review:
+      properties:
+        _id:
+          type: string
+        showType:
+          type: string
+          example: "private show"
+        userId:
+          type: string
+        reviews:
+          type: string
+          example: "not good model"
+        ratings:
+          type: integer
+          example: 3
+        createdAt:
+          type: string
+          format: date-time
+          example: "2025-02-05T13:06:49.021Z"
+        updatedAt:
+          type: string
+          format: date-time
+          example: "2025-02-05T13:06:49.021Z"
+
+    TokenHistory:
+      type: array
+      items:
+        type: object
+        properties:
+          userId:
+            type: string
+            example: "676140e211188e6892f1f9e8"
+          PublicTips:
+            type: string
+            example: "50"
+          PrivateTips:
+            type: string
+            example: "0"
+          Private:
+            type: string
+            example: "0"
+          ExclusivePrivate:
+            type: string
+            example: "0"
+          SpyMode:
+            type: string
+            example: "0"
+          GroupShow:
+            type: string
+            example: "0"
+          Content:
+            type: string
+            example: "0"
+          FanClub:
+            type: string
+            example: "0"
+          totalToken:
+            type: string
+            example: "0"
+          lastPaid:
+            type: string
+            format: date-time
+            example: "2025-01-30T12:49:16.025Z"
+          username:
+            type: string
+            example: "Neetesh Trivedi"
+       
+

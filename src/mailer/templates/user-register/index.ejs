@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verify your email</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .container {
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #ffffff;
+            border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            font-size: 24px;
+        }
+        p {
+            font-size: 16px;
+            line-height: 1.5;
+            text-align: center;
+            color: #555;
+        }
+        .button {
+            display: inline-block;
+            background-color: #d9534f;
+            color: #ffffff;
+            padding: 15px 25px;
+            border-radius: 5px;
+            font-size: 16px;
+            text-align: center;
+            text-decoration: none;
+            margin: 20px auto;
+            display: block;
+            width: fit-content;
+        }
+        .button:hover {
+            background-color: #c9302c;
+        }
+        .password-box {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+            background-color: #f8f8f8;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+            text-align: center;
+        }
+        .footer {
+            font-size: 12px;
+            color: #777;
+            margin-top: 20px;
+            text-align: center;
+        }
+        .footer a {
+            color: #777;
+            text-decoration: none;
+        }
+        .footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Verify your email</h1>
+        <p>We'd like to make sure we got your email address right.</p>
+        <a href="<%= custom.resetLink %>" class="button"><button>Verify email and Change password</button></a>
+
+        <p>Your password:</p>
+        <div class="password-box"><%= custom.password %></div>
+
+        <p>This will be expire in 7 days.</a>.</p>
+
+        <p>By verifying your email, you confirm your registration and that you are over 18 years old. We'll use this email to keep you posted on important info about your account, product updates, news, and special offers.</p>
+
+        <div class="footer">
+            <p>&copy; <%= custom.year %> YourCompany Inc. All rights reserved.</p>
+            <p><a href="<%= custom.termsLink %>">Terms of Use</a> | <a href="<%= custom.privacyLink %>">Privacy Policy</a> | <a href="<%= custom.supportLink %>">Support</a></p>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verify Your Email</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        .email-container {
+            max-width: 600px;
+            margin: 20px auto;
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        .email-container h1 {
+            color: #333333;
+        }
+        .verify-button {
+            display: inline-block;
+            background-color: #c41e3a;
+            color: #ffffff;
+            text-decoration: none;
+            padding: 12px 24px;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+        .verify-button:hover {
+            background-color: #a5172f;
+        }
+        .password-section {
+            font-size: 18px;
+            margin: 20px 0;
+        }
+        .password {
+            font-weight: bold;
+            color: #333333;
+            font-size: 20px;
+            letter-spacing: 1px;
+        }
+        .footer {
+            font-size: 12px;
+            color: #777777;
+            margin-top: 20px;
+            line-height: 1.5;
+        }
+        .footer a {
+            color: #c41e3a;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        <img src="logo-placeholder.png" alt="Verify your email address" style="max-width: 100%; height: auto; margin-bottom: 20px;">
+        <h1>Verify your email</h1>
+        <p>We'd like to make sure we got your email address right.</p>
+        <a href="<%= custom.resetLink %>" class="verify-button"><button>Verify email address</button></a>
+        <% if (custom.password) { %>
+            <div class="password-section">
+                <p>Your password</p>
+                <div class="password"><%= custom.password %></div>
+                <p>For security reasons, we recommend <a href="#">changing your password</a>.</p>
+            </div>
+        <% } %>
+        <div class="footer">
+            <p>
+                By verifying your email, you confirm your registration and that you are 18 years (21 for the USA) or older. 
+                We'll use this email to keep you posted on important info.
+            </p>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,16 @@
+export enum Os {
+    windows = 'windows',
+    macOS = 'macOS',
+    linux = 'linux',
+    android = 'android',
+    iOS = 'iOS',
+    chromeOS = 'chromeOS',
+    unix = 'unix',
+    freeBSD = 'freeBSD',
+    openBSD = 'openBSD',
+    netBSD = 'netBSD',
+    solaris = 'solaris',
+    aix = 'aix',
+    hpux = 'hpux',
+    other = 'other',
+}

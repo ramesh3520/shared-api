@@ -1,0 +1,15 @@
+export enum TypesOfToken {
+    FANCLUB = 'fanclub',
+    TIP = 'tip',
+    GIFT = 'gift',
+    PAYMENT = 'payment',
+    PUBLIC_SHOW = 'public show',
+    PRIVATE_SHOW = 'private show',
+    EXCLUSIVE_PRIVATE_SHOW = 'exclusive private show',
+    TICKET_SHOW = 'ticket show',
+    GROUP_SHOW = 'group show',
+    CONTRIBUTE = 'contribute',
+    PURCHASED_CONTENT = 'purchased content',
+    CONTENT = 'content',
+    SPY_MODE = 'spy mode',
+}
